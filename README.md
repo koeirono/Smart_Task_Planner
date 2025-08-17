@@ -1,1 +1,2 @@
 # Smart_Task_Planner
+A lightweight productivity app that helps you organize tasks, set priorities, and stay focused. Designed to be simple first, with the flexibility to grow into a full‑stack tool with reminders, sync, and collaboration.
