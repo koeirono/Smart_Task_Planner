@@ -7,14 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBox = document.getElementById("searchBox");
   const filterStatus = document.getElementById("filterStatus");
   const progressBar = document.getElementById("progressBar");
+  const resetTasksBtn = document.getElementById("resetTasksBtn");
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   function updateTaskStatistics() {
     const total = tasks.length;
-    const completed = tasks.filter(t => t.complete).length;
+    const completed = tasks.filter((t) => t.complete).length;
     const today = new Date().toISOString().split("T")[0];
-    const overdue = tasks.filter(t => t.date && t.date < today && !t.complete).length;
+    const overdue = tasks.filter(
+      (t) => t.date && t.date < today && !t.complete
+    ).length;
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
     document.getElementById("totalTasks").textContent = total;
@@ -31,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       progressBar.setAttribute("aria-valuenow", 0);
       return;
     }
-    const completed = tasks.filter(t => t.complete).length;
+    const completed = tasks.filter((t) => t.complete).length;
     const percent = Math.round((completed / tasks.length) * 100);
 
     progressBar.style.width = percent + "%";
@@ -43,7 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
     renderTasks();
     updateProgress();
-    if (typeof updatePriorityBreakdown === "function") updatePriorityBreakdown();
+    if (typeof updatePriorityBreakdown === "function")
+      updatePriorityBreakdown();
     updateTaskStatistics();
   }
 
@@ -53,21 +57,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const filter = filterStatus.value;
 
     tasks
-      .filter(task => task.name.toLowerCase().includes(searchTerm))
-      .filter(task => {
+      .filter((task) => task.name.toLowerCase().includes(searchTerm))
+      .filter((task) => {
         if (filter === "complete") return task.complete;
         if (filter === "incomplete") return !task.complete;
         return true;
       })
-      .forEach(task => {
+      .forEach((task) => {
         const li = document.createElement("li");
         li.className = `list-group-item d-flex justify-content-between align-items-center`;
 
         li.innerHTML = `
           <div>
-            <input type="checkbox" ${task.complete ? "checked" : ""} class="me-2 toggle-task"/>
+            <input type="checkbox" ${
+              task.complete ? "checked" : ""
+            } class="me-2 toggle-task"/>
             <strong>${task.name}</strong>
-            <span class="badge bg-${task.priority === "high" ? "danger" : task.priority === "medium" ? "warning" : "success"} ms-2">${task.priority}</span>
+            <span class="badge bg-${
+              task.priority === "high"
+                ? "danger"
+                : task.priority === "medium"
+                ? "warning"
+                : "success"
+            } ms-2">${task.priority}</span>
             <small class="text-muted ms-2">${task.date || ""}</small>
           </div>
           <div>
@@ -90,10 +102,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         li.querySelector(".delete-task").addEventListener("click", () => {
-          tasks = tasks.filter(t => t.id !== task.id);
-          saveTasks();
+          const confirmDelete = confirm(
+            `Are you sure you want to delete "${task.name}"?`
+          );
+          if (confirmDelete) {
+            tasks = tasks.filter((t) => t.id !== task.id);
+            saveTasks();
+          }
         });
-
         taskList.appendChild(li);
       });
   }
@@ -103,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const id = document.getElementById("taskId").value;
 
     if (id) {
-      const task = tasks.find(t => t.id == id);
+      const task = tasks.find((t) => t.id == id);
       task.name = taskName.value;
       task.priority = taskPriority.value;
       task.date = taskDate.value;
@@ -113,7 +129,7 @@ document.addEventListener("DOMContentLoaded", () => {
         name: taskName.value,
         priority: taskPriority.value,
         date: taskDate.value,
-        complete: false
+        complete: false,
       });
     }
 
@@ -122,13 +138,27 @@ document.addEventListener("DOMContentLoaded", () => {
     bootstrap.Modal.getInstance(document.getElementById("taskModal")).hide();
   });
 
+      resetTasksBtn.addEventListener("click", () => {
+      const confirmReset = confirm(
+        "Are you sure you want to delete all tasks?"
+      );
+      if (confirmReset) {
+        tasks = [];
+        localStorage.removeItem("tasks");
+        renderTasks();
+        updateProgress();
+        updatePriorityBreakdown();
+        updateTaskStatistics();
+      }
+    });
+
   const quotes = [
     "Small daily improvements over time lead to stunning results. – Robin Sharma",
     "Discipline is the bridge between goals and accomplishment. – Jim Rohn",
     "Success is the sum of small efforts, repeated day in and day out. – Robert Collier",
     "Motivation gets you started. Habit keeps you going. – Jim Ryun",
     "Don’t watch the clock; do what it does. Keep going. – Sam Levenson",
-    "A little progress each day adds up to big results."
+    "A little progress each day adds up to big results.",
   ];
 
   function showRandomQuote() {

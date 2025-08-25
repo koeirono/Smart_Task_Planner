@@ -16,10 +16,13 @@
     ></script>
   </head>
 
-<body class="bg-gradient-to-r from-gray-800 to-gray-700 p-10 min-h-screen flex items-center justify-center text-white">
-
-<div class="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-      <h1 class="text-center text-3xl font-bold mb-4 text-cyan-700">
+  <body
+    class="bg-gradient-to-r from-gray-800 to-gray-700 p-10 min-h-screen flex items-center justify-center text-white"
+  >
+    <div
+      class="bg-gray-900 text-white p-6 rounded-lg shadow-lg w-full max-w-2xl"
+    >
+      <h1 class="text-center text-white text-3xl font-bold mb-4 text-cyan-700">
         Smart Task Planner
       </h1>
 
@@ -69,6 +72,13 @@
         data-bs-target="#taskModal"
       >
         <i class="fa-solid fa-plus"></i> Add Task
+      </button>
+
+      <button
+        class="btn mt-2 w-full bg-red-600 hover:bg-red-700 text-white focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:shadow-none"
+        id="resetTasksBtn"
+      >
+        <i class="fa-solid fa-trash"></i> Reset All Tasks
       </button>
     </div>
 
