@@ -25,23 +25,28 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("overdueTasks").textContent = overdue;
     document.getElementById("completionPercent").textContent = percent + "%";
   }
+  function getWittyLabel(percent) {
+    if (percent === 0) return "Just getting started…😀";
+    if (percent <= 49) return "Warming up! 😌";
+    if (percent <= 50) return "Halfway done 💪";
+    if (percent <= 70) return "Making progress 🙌";
+    if (percent <= 90) return "Almost there 😎";
+    if (percent < 100) return "So close! 👀";
+    return "All done! 🚀";
+  }
 
   function updateProgress() {
     if (!progressBar) return;
-    if (tasks.length === 0) {
-      progressBar.style.width = "0%";
-      progressBar.innerText = "0%";
-      progressBar.setAttribute("aria-valuenow", 0);
-      return;
-    }
+
+    const total = tasks.length;
     const completed = tasks.filter((t) => t.complete).length;
-    const percent = Math.round((completed / tasks.length) * 100);
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
     progressBar.style.width = percent + "%";
-    progressBar.innerText = percent + "%";
     progressBar.setAttribute("aria-valuenow", percent);
-  }
 
+    progressBar.innerText = `${percent}% - ${getWittyLabel(percent)}`;
+  }
   function saveTasks() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
     renderTasks();
@@ -55,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     taskList.innerHTML = "";
     const searchTerm = searchBox.value.toLowerCase();
     const filter = filterStatus.value;
+    const today = new Date().toISOString().split("T")[0];
 
     tasks
       .filter((task) => task.name.toLowerCase().includes(searchTerm))
@@ -66,27 +72,32 @@ document.addEventListener("DOMContentLoaded", () => {
       .forEach((task) => {
         const li = document.createElement("li");
         li.className = `list-group-item d-flex justify-content-between align-items-center`;
-
+        const today = new Date().toISOString().split("T")[0];
+        const isOverdue = task.date && task.date < today && !task.complete;
+        const overdueBadge = isOverdue
+          ? `<span class="badge badge-purple ms-2">Overdue</span>`
+          : "";
         li.innerHTML = `
-          <div>
-            <input type="checkbox" ${
-              task.complete ? "checked" : ""
-            } class="me-2 toggle-task"/>
-            <strong>${task.name}</strong>
-            <span class="badge bg-${
-              task.priority === "high"
-                ? "danger"
-                : task.priority === "medium"
-                ? "warning"
-                : "success"
-            } ms-2">${task.priority}</span>
-            <small class="text-muted ms-2">${task.date || ""}</small>
-          </div>
-          <div>
-            <button class="btn btn-sm btn-info edit-task">Edit</button>
-            <button class="btn btn-sm btn-danger delete-task">Delete</button>
-          </div>
-        `;
+      <div>
+        <input type="checkbox" ${
+          task.complete ? "checked" : ""
+        } class="me-2 toggle-task"/>
+        <strong>${task.name}</strong>
+        <span class="badge bg-${
+          task.priority === "high"
+            ? "danger"
+            : task.priority === "medium"
+            ? "warning"
+            : "success"
+        } ms-2">${task.priority}</span>
+        <small class="text-muted ms-2">${task.date || ""}</small>
+        ${overdueBadge}
+      </div>
+      <div>
+        <button class="btn btn-sm btn-info edit-task">Edit</button>
+        <button class="btn btn-sm btn-danger delete-task">Delete</button>
+      </div>
+    `;
 
         li.querySelector(".toggle-task").addEventListener("change", () => {
           task.complete = !task.complete;
@@ -138,19 +149,17 @@ document.addEventListener("DOMContentLoaded", () => {
     bootstrap.Modal.getInstance(document.getElementById("taskModal")).hide();
   });
 
-      resetTasksBtn.addEventListener("click", () => {
-      const confirmReset = confirm(
-        "Are you sure you want to delete all tasks?"
-      );
-      if (confirmReset) {
-        tasks = [];
-        localStorage.removeItem("tasks");
-        renderTasks();
-        updateProgress();
-        updatePriorityBreakdown();
-        updateTaskStatistics();
-      }
-    });
+  resetTasksBtn.addEventListener("click", () => {
+    const confirmReset = confirm("Are you sure you want to delete all tasks?");
+    if (confirmReset) {
+      tasks = [];
+      localStorage.removeItem("tasks");
+      renderTasks();
+      updateProgress();
+      updatePriorityBreakdown();
+      updateTaskStatistics();
+    }
+  });
 
   const quotes = [
     "Small daily improvements over time lead to stunning results. – Robin Sharma",
