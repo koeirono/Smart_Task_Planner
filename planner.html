@@ -22,26 +22,28 @@
     </style>
   </head>
 
-<body class="relative min-h-screen text-white flex flex-col items-center justify-start">
+  <body
+    class="relative min-h-screen text-white flex flex-col items-center justify-start"
+  >
+    <div
+      class="absolute inset-0 bg-cover bg-center z-0"
+      style="background-image: url('planner-2428871_1280.jpg')"
+    ></div>
 
-  <div
-    class="absolute inset-0 bg-cover bg-center z-0"
-    style="background-image: url('planner-2428871_1280.jpg');"
-  ></div>
+    <div class="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
 
+    <div class="relative z-10 w-full flex justify-end p-6 space-x-2">
+      <a href="login.html" class="btn btn-sm btn-secondary">
+        <i class="fa-solid fa-right-from-bracket"></i> Log Out
+      </a>
+    </div>
 
-  <div class="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
-
-  <div class="relative z-10 w-full flex justify-end p-6 space-x-2">
-    <a href="login.html" class="btn btn-sm btn-secondary">
-      <i class="fa-solid fa-right-from-bracket"></i> Log Out
-    </a>
-  </div>
-
-  <div class="relative z-10 w-full max-w-2xl p-6 mt-4 rounded-lg shadow-lg bg-gray-900 bg-opacity-80">
-    <h1 class="text-center text-3xl font-bold mb-4 text-cyan-400">
-      DayPilot
-    </h1>
+    <div
+      class="relative z-10 w-full max-w-2xl p-6 mt-4 rounded-lg shadow-lg bg-gray-900 bg-opacity-80"
+    >
+      <h1 class="text-center text-3xl font-bold mb-4 text-cyan-400">
+        DayPilot
+      </h1>
 
       <div class="mb-4 text-center">
         <p id="quote" class="italic text-white"></p>
@@ -86,6 +88,14 @@
         </select>
       </div>
 
+      <select id="filterCategory" class="form-select mb-3">
+        <option value="all">All Categories</option>
+        <option value="personal">Personal</option>
+        <option value="work">Work</option>
+        <option value="school">School</option>
+        <option value="other">Other</option>
+      </select>
+      <input type="date" id="filterDate" class="form-control mb-3" />
       <ul id="taskList" class="list-group space-y-2"></ul>
 
       <button
@@ -133,6 +143,15 @@
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-gray-700">Category</label>
+                <select id="taskCategory" class="form-select">
+                  <option value="personal">Personal</option>
+                  <option value="work">Work</option>
+                  <option value="school">School</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               <div class="mb-3">

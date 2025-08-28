@@ -60,6 +60,9 @@ document.addEventListener("DOMContentLoaded", () => {
     taskList.innerHTML = "";
     const searchTerm = searchBox.value.toLowerCase();
     const filter = filterStatus.value;
+    const categoryFilter =
+      document.getElementById("filterCategory")?.value || "all";
+    const dateFilter = document.getElementById("filterDate")?.value || "";
     const today = new Date().toISOString().split("T")[0];
 
     tasks
@@ -67,6 +70,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter((task) => {
         if (filter === "complete") return task.complete;
         if (filter === "incomplete") return !task.complete;
+        return true;
+      })
+      .filter((task) => {
+        if (categoryFilter !== "all" && task.category !== categoryFilter)
+          return false;
+        if (dateFilter && task.date !== dateFilter) return false;
         return true;
       })
       .forEach((task) => {
@@ -78,26 +87,26 @@ document.addEventListener("DOMContentLoaded", () => {
           ? `<span class="badge badge-purple ms-2">Overdue</span>`
           : "";
         li.innerHTML = `
-      <div>
-        <input type="checkbox" ${
-          task.complete ? "checked" : ""
-        } class="me-2 toggle-task"/>
-        <strong>${task.name}</strong>
-        <span class="badge bg-${
-          task.priority === "high"
+  <div>
+    <input type="checkbox" ${task.complete ? "checked" : ""
+          } class="me-2 toggle-task"/>
+    <strong>${task.name}</strong>
+    <span class="badge bg-${task.priority === "high"
             ? "danger"
             : task.priority === "medium"
-            ? "warning"
-            : "success"
-        } ms-2">${task.priority}</span>
-        <small class="text-muted ms-2">${task.date || ""}</small>
-        ${overdueBadge}
-      </div>
-      <div>
-        <button class="btn btn-sm btn-info edit-task">Edit</button>
-        <button class="btn btn-sm btn-danger delete-task">Delete</button>
-      </div>
-    `;
+              ? "warning"
+              : "success"
+          } ms-2">${task.priority}</span>
+    <span class="badge bg-purple ms-2">${task.category || "Uncategorized"
+          }</span>
+    <small class="text-muted ms-2">${task.date || ""}</small>
+    ${overdueBadge}
+  </div>
+  <div>
+    <button class="btn btn-sm btn-info edit-task">Edit</button>
+    <button class="btn btn-sm btn-danger delete-task">Delete</button>
+  </div>
+`;
 
         li.querySelector(".toggle-task").addEventListener("change", () => {
           task.complete = !task.complete;
@@ -140,6 +149,22 @@ document.addEventListener("DOMContentLoaded", () => {
         name: taskName.value,
         priority: taskPriority.value,
         date: taskDate.value,
+        complete: false,
+      });
+    }
+    if (id) {
+      const task = tasks.find((t) => t.id == id);
+      task.name = taskName.value;
+      task.priority = taskPriority.value;
+      task.date = taskDate.value;
+      task.category = document.getElementById("taskCategory").value; // new
+    } else {
+      tasks.push({
+        id: Date.now(),
+        name: taskName.value,
+        priority: taskPriority.value,
+        date: taskDate.value,
+        category: document.getElementById("taskCategory").value, // new
         complete: false,
       });
     }
