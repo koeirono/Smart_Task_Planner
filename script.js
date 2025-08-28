@@ -137,21 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
   taskForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const id = document.getElementById("taskId").value;
-
-    if (id) {
-      const task = tasks.find((t) => t.id == id);
-      task.name = taskName.value;
-      task.priority = taskPriority.value;
-      task.date = taskDate.value;
-    } else {
-      tasks.push({
-        id: Date.now(),
-        name: taskName.value,
-        priority: taskPriority.value,
-        date: taskDate.value,
-        complete: false,
-      });
-    }
     if (id) {
       const task = tasks.find((t) => t.id == id);
       task.name = taskName.value;
