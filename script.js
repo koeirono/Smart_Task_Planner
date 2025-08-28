@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressBar = document.getElementById("progressBar");
   const resetTasksBtn = document.getElementById("resetTasksBtn");
 
+  
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   function updateTaskStatistics() {
