@@ -216,6 +216,4 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTaskStatistics();
   updateProgress();
   if (typeof updatePriorityBreakdown === "function") updatePriorityBreakdown();
-
-
 });
