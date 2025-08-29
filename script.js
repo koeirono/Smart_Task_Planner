@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterStatus = document.getElementById("filterStatus");
   const progressBar = document.getElementById("progressBar");
   const resetTasksBtn = document.getElementById("resetTasksBtn");
+  const filterCategory = document.getElementById("filterCategory");
+  if (filterCategory) {
+    filterCategory.addEventListener("change", renderTasks);
+  }
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
