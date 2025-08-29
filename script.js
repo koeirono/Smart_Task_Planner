@@ -15,6 +15,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+  function updateProgress() {
+    const total = tasks.length;
+    const completed = tasks.filter((t) => t.complete).length;
+    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+    if (progressBar) {
+      progressBar.style.width = percent + "%";
+      progressBar.textContent = percent + "%";
+
+      const witty = getWittyLabel(percent);
+      const labelEl = document.getElementById("progressLabel");
+      if (labelEl) labelEl.textContent = witty;
+    }
+  }
+
   function updateTaskStatistics() {
     const total = tasks.length;
     const completed = tasks.filter((t) => t.complete).length;
@@ -30,7 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("completionPercent").textContent = percent + "%";
   }
   function getWittyLabel(percent) {
-    if (percent === 0) return "Just getting started…😀";
+    if (percent === 0) return "Get started";
+    if (percent <= 40) return "Just getting started…😀";
     if (percent <= 49) return "Warming up! 😌";
     if (percent <= 50) return "Halfway done 💪";
     if (percent <= 70) return "Making progress 🙌";
@@ -104,6 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
         li.querySelector(".toggle-task").addEventListener("change", () => {
           task.complete = !task.complete;
           saveTasks();
+          renderTasks();
+          updateTaskStatistics();
+          updateProgress();
+          if (typeof updatePriorityBreakdown === "function")
+            updatePriorityBreakdown();
         });
 
         li.querySelector(".edit-task").addEventListener("click", () => {
@@ -178,6 +199,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (quoteEl) quoteEl.textContent = quotes[randomIndex];
   }
 
+  function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    renderTasks();
+    updateTaskStatistics();
+    updateProgress();
+    if (typeof updatePriorityBreakdown === "function")
+      updatePriorityBreakdown();
+  }
+
   searchBox.addEventListener("input", renderTasks);
   filterStatus.addEventListener("change", renderTasks);
 
@@ -186,4 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTaskStatistics();
   updateProgress();
   if (typeof updatePriorityBreakdown === "function") updatePriorityBreakdown();
+
+
 });
