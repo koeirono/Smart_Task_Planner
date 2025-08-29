@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressBar = document.getElementById("progressBar");
   const resetTasksBtn = document.getElementById("resetTasksBtn");
 
-  
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
   function updateTaskStatistics() {
@@ -36,29 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return "All done! 🚀";
   }
 
-  function updateProgress() {
-    if (!progressBar) return;
-
-    const total = tasks.length;
-    const completed = tasks.filter((t) => t.complete).length;
-    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
-
-    progressBar.style.width = percent + "%";
-    progressBar.setAttribute("aria-valuenow", percent);
-
-    progressBar.innerText = `${percent}% - ${getWittyLabel(percent)}`;
-  }
-  function saveTasks() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    renderTasks();
-    updateProgress();
-    if (typeof updatePriorityBreakdown === "function")
-      updatePriorityBreakdown();
-    updateTaskStatistics();
-  }
-
   function renderTasks() {
     taskList.innerHTML = "";
+
     const searchTerm = searchBox.value.toLowerCase();
     const filter = filterStatus.value;
     const categoryFilter =
@@ -74,40 +53,49 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
       })
       .filter((task) => {
-        if (categoryFilter !== "all" && task.category !== categoryFilter)
+        if (
+          categoryFilter !== "all" &&
+          (task.category || "").toLowerCase() !== categoryFilter.toLowerCase()
+        )
           return false;
+
         if (dateFilter && task.date !== dateFilter) return false;
+
         return true;
       })
       .forEach((task) => {
         const li = document.createElement("li");
         li.className = `list-group-item d-flex justify-content-between align-items-center`;
-        const today = new Date().toISOString().split("T")[0];
+
         const isOverdue = task.date && task.date < today && !task.complete;
         const overdueBadge = isOverdue
           ? `<span class="badge badge-purple ms-2">Overdue</span>`
           : "";
+
         li.innerHTML = `
-  <div>
-    <input type="checkbox" ${task.complete ? "checked" : ""
+        <div>
+          <input type="checkbox" ${
+            task.complete ? "checked" : ""
           } class="me-2 toggle-task"/>
-    <strong>${task.name}</strong>
-    <span class="badge bg-${task.priority === "high"
-            ? "danger"
-            : task.priority === "medium"
+          <strong>${task.name}</strong>
+          <span class="badge bg-${
+            task.priority === "high"
+              ? "danger"
+              : task.priority === "medium"
               ? "warning"
               : "success"
           } ms-2">${task.priority}</span>
-    <span class="badge bg-purple ms-2">${task.category || "Uncategorized"
+          <span class="badge bg-purple ms-2">${
+            task.category || "Uncategorized"
           }</span>
-    <small class="text-muted ms-2">${task.date || ""}</small>
-    ${overdueBadge}
-  </div>
-  <div>
-    <button class="btn btn-sm btn-info edit-task">Edit</button>
-    <button class="btn btn-sm btn-danger delete-task">Delete</button>
-  </div>
-`;
+          <small class="text-muted ms-2">${task.date || ""}</small>
+          ${overdueBadge}
+        </div>
+        <div>
+          <button class="btn btn-sm btn-info edit-task">Edit</button>
+          <button class="btn btn-sm btn-danger delete-task">Delete</button>
+        </div>
+      `;
 
         li.querySelector(".toggle-task").addEventListener("change", () => {
           task.complete = !task.complete;
@@ -119,18 +107,17 @@ document.addEventListener("DOMContentLoaded", () => {
           taskName.value = task.name;
           taskPriority.value = task.priority;
           taskDate.value = task.date;
+          document.getElementById("taskCategory").value = task.category || "";
           new bootstrap.Modal(document.getElementById("taskModal")).show();
         });
 
         li.querySelector(".delete-task").addEventListener("click", () => {
-          const confirmDelete = confirm(
-            `Are you sure you want to delete "${task.name}"?`
-          );
-          if (confirmDelete) {
+          if (confirm(`Are you sure you want to delete "${task.name}"?`)) {
             tasks = tasks.filter((t) => t.id !== task.id);
             saveTasks();
           }
         });
+
         taskList.appendChild(li);
       });
   }
@@ -143,14 +130,14 @@ document.addEventListener("DOMContentLoaded", () => {
       task.name = taskName.value;
       task.priority = taskPriority.value;
       task.date = taskDate.value;
-      task.category = document.getElementById("taskCategory").value; // new
+      task.category = document.getElementById("taskCategory").value;
     } else {
       tasks.push({
         id: Date.now(),
         name: taskName.value,
         priority: taskPriority.value,
         date: taskDate.value,
-        category: document.getElementById("taskCategory").value, // new
+        category: document.getElementById("taskCategory").value,
         complete: false,
       });
     }
