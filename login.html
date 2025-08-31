@@ -1,94 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script
-      src="https://kit.fontawesome.com/475566af2a.js"
-      crossorigin="anonymous"
-    ></script>
-    <title>Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body
-    class="relative min-h-screen text-white flex items-center justify-center"
-  >
-    <div
-      class="absolute inset-0 bg-cover bg-center z-0"
-      style="background-image: url('calendar-2428560_1280.jpg')"
-    ></div>
 
-    <div class="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/475566af2a.js" crossorigin="anonymous"></script>
+  <title>Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-    <div
-      class="relative z-10 bg-black bg-opacity-60 p-8 rounded-2xl shadow-lg w-full max-w-md backdrop-blur-md"
-    >
-      <h1 class="text-3xl font-bold text-cyan-400 text-center mb-6">
-        Welcome Back
-      </h1>
+<body class="relative min-h-screen text-white flex items-center justify-center">
+  <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('calendar-2428560_1280.jpg')"></div>
 
-      <form id="loginForm" class="space-y-4">
-        <div>
-          <label for="username" class="block text-sm mb-1">Username</label>
-          <input
-            type="text"
-            id="username"
-            class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-cyan-500 outline-none"
-            required
-          />
-        </div>
+  <div class="absolute inset-0 bg-black bg-opacity-50 z-0"></div>
 
-        <div>
-          <label for="password" class="block text-sm mb-1">Password</label>
-          <input
-            type="password"
-            id="password"
-            class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-cyan-500 outline-none"
-            required
-          />
-        </div>
+  <div class="relative z-10 bg-black bg-opacity-60 p-8 rounded-2xl shadow-lg w-full max-w-md backdrop-blur-md">
+    <h1 class="text-3xl font-bold text-cyan-400 text-center mb-6">
+      Welcome Back
+    </h1>
 
-        <button
-          type="submit"
-          class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 rounded-lg"
-        >
-          Login
-        </button>
-      </form>
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label for="username" class="block text-sm mb-1">Username</label>
+        <input type="text" id="username"
+          class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-cyan-500 outline-none"
+          required />
+      </div>
 
-      <p class="text-gray-400 text-sm text-center mt-4">
-        Don’t have an account?
-        <a href="signup.html" class="text-cyan-400 hover:underline">Sign Up</a>
-      </p>
-    </div>
+      <div>
+        <label for="password" class="block text-sm mb-1">Password</label>
+        <input type="password" id="password"
+          class="w-full p-3 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-cyan-500 outline-none"
+          required />
+      </div>
 
-    <script>
-      document.getElementById("loginForm").addEventListener("submit", (e) => {
-        e.preventDefault();
+      <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 rounded-lg">
+        Login
+      </button>
+    </form>
 
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value;
+    <p class="text-gray-400 text-sm text-center mt-4">
+      Don’t have an account?
+      <a href="signup.html" class="text-cyan-400 hover:underline">Sign Up</a>
+    </p>
+  </div>
 
-        let users = JSON.parse(localStorage.getItem("users")) || {};
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
 
-        if (!users[username]) {
-          alert("User not found! Please sign up first.");
-          return;
-        }
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
 
-        if (users[username].password !== password) {
-          alert("Wrong password!");
-          return;
-        }
+      let users = JSON.parse(localStorage.getItem("users")) || {};
 
-        localStorage.setItem("currentUser", username);
+      if (!users[username]) {
+        alert("User not found! Please sign up first.");
+        return;
+      }
 
-        alert("Login successful");
-        window.location.href = "planner.html";
-      });
-    </script>
-  </body>
+      if (users[username].password !== password) {
+        alert("Wrong password!");
+        return;
+      }
+
+      localStorage.setItem("currentUser", username);
+
+      alert("Login successful");
+      window.location.href = "planner.html";
+    });
+  </script>
+</body>
+
 </html>
-
-
-

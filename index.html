@@ -1,150 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DayPilot</title>
-    <script
-      src="https://kit.fontawesome.com/475566af2a.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-900 text-white min-h-screen flex flex-col">
-<header class="absolute top-0 left-0 w-full flex justify-between items-center px-6 md:px-10 py-6 bg-black/60 backdrop-blur-sm z-20">
-  <h1 class="text-2xl font-bold text-cyan-400">DayPilot</h1>
 
-  <button id="menu-btn" class="block md:hidden text-cyan-400 focus:outline-none">
-    <i class="fa-solid fa-bars text-2xl"></i>
-  </button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DayPilot</title>
+  <script src="https://kit.fontawesome.com/475566af2a.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-  <nav id="menu" class="hidden md:flex space-x-6">
-    <a href="#features" class="hover:text-cyan-400">Features</a>
-    <a href="#about" class="hover:text-cyan-400">About</a>
-    <a href="#contact" class="hover:text-cyan-400">Sign Up</a>
-    <a href="login.html" class="bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-600">Login</a>
-  </nav>
-</header>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+  <header
+    class="absolute top-0 left-0 w-full flex justify-between items-center px-6 md:px-10 py-6 bg-black/60 backdrop-blur-sm z-20">
+    <h1 class="text-2xl font-bold text-cyan-400">DayPilot</h1>
 
-<script>
-  const btn = document.getElementById('menu-btn');
-  const menu = document.getElementById('menu');
+    <button id="menu-btn" class="block md:hidden text-cyan-400 focus:outline-none">
+      <i class="fa-solid fa-bars text-2xl"></i>
+    </button>
 
-  btn.addEventListener('click', () => {
-    menu.classList.toggle('hidden');
-  });
-</script>
+    <nav id="menu" class="hidden md:flex space-x-6">
+      <a href="#features" class="hover:text-cyan-400">Features</a>
+      <a href="#about" class="hover:text-cyan-400">About</a>
+      <a href="#contact" class="hover:text-cyan-400">Sign Up</a>
+      <a href="login.html" class="bg-cyan-500 px-4 py-2 rounded-lg font-semibold hover:bg-cyan-600">Login</a>
+    </nav>
+  </header>
 
-    <section
-      class="relative h-screen flex items-center justify-center text-center"
-    >
-      <video
-        autoplay
-        muted
-        loop
-        class="absolute inset-0 w-full h-full object-cover"
-      >
-        <source src="tasks.mp4" type="video/mp4" />
-      </video>
+  <script>
+    const btn = document.getElementById("menu-btn");
+    const menu = document.getElementById("menu");
 
-      <div class="absolute inset-0 bg-black/50"></div>
-      <div class="relative z-10 max-w-3xl px-6">
-        <h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-          Organise Your Day <span class="text-cyan-400">Smarter</span>
-        </h2>
-        <p class="text-white font-semibold mb-8">
-          Manage tasks, set priorities, track progress, and stay ahead of
-          deadlines with DayPilot. <br />
-          Everything you need to stay organized and in control is at your
-          fingertips. <br /><br />
-          Whether you’re tackling personal goals, academic projects, or
-          professional tasks, DayPilot helps you break down complex work into
-          manageable steps, stay motivated with clear progress tracking, and
-          accomplish more with less stress. Productivity doesn’t have to be
-          overwhelming , DayPilot makes it effortless.
-        </p>
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+    });
+  </script>
 
-        <div class="space-x-4">
-          <a
-            href="signup.html"
-            class="bg-cyan-500 px-6 py-3 rounded-xl font-semibold hover:bg-cyan-600"
-            >Get Started</a
-          >
-          <a
-            href="#features"
-            class="bg-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-600"
-            >Learn More</a
-          >
-        </div>
-      </div>
-    </section>
+  <section class="relative h-screen flex items-center justify-center text-center">
+    <video autoplay muted loop class="absolute inset-0 w-full h-full object-cover">
+      <source src="tasks.mp4" type="video/mp4" />
+    </video>
 
-    <section id="features" class="py-20 px-10 bg-black/60">
-      <h3 class="text-center text-3xl font-bold mb-12 text-cyan-400">
-        Features
-      </h3>
-      <div class="grid md:grid-cols-3 gap-8">
-        <div
-          class="bg-black p-6 rounded-xl shadow-lg hover:shadow-cyan-500/30 transition"
-        >
-          <h4 class="text-xl font-semibold mb-2">
-            <i class="fa-regular fa-calendar-days"></i> Smart Scheduling
-          </h4>
-          <p class="text-gray-400">
-            Plan tasks with deadlines, categories, and priorities.
-          </p>
-        </div>
-        <div
-          class="bg-black p-6 rounded-xl shadow-lg hover:shadow-cyan-500/30 transition"
-        >
-          <h4 class="text-xl font-semibold mb-2">
-            <i class="fa-solid fa-chart-column"></i> Progress Tracking
-          </h4>
-          <p class="text-gray-400">
-            Visualize completion with progress bars and stats.
-          </p>
-        </div>
-        <div
-          class="bg-black p-6 rounded-xl shadow-lg hover:shadow-cyan-500/30 transition"
-        >
-          <h4 class="text-xl font-semibold mb-2">
-            <i class="fa-solid fa-unlock"></i> Secure Login
-          </h4>
-          <p class="text-gray-400">
-            Keep your tasks safe and private under your account.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section id="about" class="py-20 px-10 bg-gray/60">
-      <h3 class="text-center text-3xl font-bold mb-8 text-cyan-400">
-        About Us
-      </h3>
-      <p class="text-center text-gray-300 font-bold max-w-3xl mx-auto">
-        Made for everyday doers, DayPilot keeps your tasks on track without the chaos.
-        <br /><br />DayPilot helps you stay on top of your daily tasks with task
-        organization, priority management, and progress tracking. Whether you’re
-        tackling school work, managing projects, or collaborating with others,
-        DayPilot keeps you focused, productive, and in control of your day.
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 max-w-3xl px-6">
+      <h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+        Organise Your Day <span class="text-cyan-400">Smarter</span>
+      </h2>
+      <p class="text-white font-semibold mb-8">
+        Manage tasks, set priorities, track progress, and stay ahead of
+        deadlines with DayPilot. <br />
+        Everything you need to stay organized and in control is at your
+        fingertips. <br /><br />
+        Whether you’re tackling personal goals, academic projects, or
+        professional tasks, DayPilot helps you break down complex work into
+        manageable steps, stay motivated with clear progress tracking, and
+        accomplish more with less stress. Productivity doesn’t have to be
+        overwhelming , DayPilot makes it effortless.
       </p>
-    </section>
 
-    <section class="py-20 text-center bg-black/60">
-      <h3 class="text-3xl font-bold mb-4">
-        Ready to boost your productivity? 🚀
-      </h3>
-      <br /><br />
-      <a
-        href="signup.html"
-        class="bg-cyan-500 px-8 py-3 rounded-xl font-semibold hover:bg-cyan-600"
-        >Create Free Account</a
-      >
-    </section>
+      <div class="space-x-4">
+        <a href="signup.html" class="bg-cyan-500 px-6 py-3 rounded-xl font-semibold hover:bg-cyan-600">Get Started</a>
+        <a href="#features" class="bg-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-600">Learn More</a>
+      </div>
+    </div>
+  </section>
 
-    <footer id="contact" class="py-6 text-center bg-black/50 text-gray-400">
-      <p>&copy; 2025 Smart Task Planner.</p>
-      <p>Email: support@smartplanner.com</p>
-    </footer>
-  </body>
+  <section id="features" class="py-20 px-10 bg-black/60">
+    <h3 class="text-center text-3xl font-bold mb-12 text-cyan-400">
+      Features
+    </h3>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-black p-6 rounded-xl shadow-lg hover:shadow-cyan-500/30 transition">
+        <h4 class="text-xl font-semibold mb-2">
+          <i class="fa-regular fa-calendar-days"></i> Smart Scheduling
+        </h4>
+        <p class="text-gray-400">
+          Plan tasks with deadlines, categories, and priorities.
+        </p>
+      </div>
+      <div class="bg-black p-6 rounded-xl shadow-lg hover:shadow-cyan-500/30 transition">
+        <h4 class="text-xl font-semibold mb-2">
+          <i class="fa-solid fa-chart-column"></i> Progress Tracking
+        </h4>
+        <p class="text-gray-400">
+          Visualize completion with progress bars and stats.
+        </p>
+      </div>
+      <div class="bg-black p-6 rounded-xl shadow-lg hover:shadow-cyan-500/30 transition">
+        <h4 class="text-xl font-semibold mb-2">
+          <i class="fa-solid fa-unlock"></i> Secure Login
+        </h4>
+        <p class="text-gray-400">
+          Keep your tasks safe and private under your account.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="py-20 px-10 bg-gray/60">
+    <h3 class="text-center text-3xl font-bold mb-8 text-cyan-400">
+      About Us
+    </h3>
+    <p class="text-center text-gray-300 font-bold max-w-3xl mx-auto">
+      Made for everyday doers, DayPilot keeps your tasks on track without the
+      chaos.
+      <br /><br />DayPilot helps you stay on top of your daily tasks with task
+      organization, priority management, and progress tracking. Whether you’re
+      tackling school work, managing projects, or collaborating with others,
+      DayPilot keeps you focused, productive, and in control of your day.
+    </p>
+  </section>
+
+  <section class="py-20 text-center bg-black/60">
+    <h3 class="text-3xl font-bold mb-4">
+      Ready to boost your productivity? 🚀
+    </h3>
+    <br /><br />
+    <a href="signup.html" class="bg-cyan-500 px-8 py-3 rounded-xl font-semibold hover:bg-cyan-600">Create Free
+      Account</a>
+  </section>
+
+  <footer id="contact" class="py-6 text-center bg-black/50 text-gray-400">
+    <p>&copy; 2025 Smart Task Planner.</p>
+    <p>Email: support@smartplanner.com</p>
+  </footer>
+</body>
+
 </html>

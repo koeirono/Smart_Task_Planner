@@ -15,6 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
+  function getWittyLabel(percent) {
+    if (percent === 0) return "Get started";
+    if (percent <= 40) return "Just getting started…😀";
+    if (percent <= 49) return "Warming up! 😌";
+    if (percent <= 50) return "Halfway done 💪";
+    if (percent <= 70) return "Making progress 🙌";
+    if (percent <= 90) return "Almost there 😎";
+    if (percent < 100) return "So close! 👀";
+    return "All done! 🚀";
+  }
+
   function updateProgress() {
     const total = tasks.length;
     const completed = tasks.filter((t) => t.complete).length;
@@ -43,16 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("completedTasks").textContent = completed;
     document.getElementById("overdueTasks").textContent = overdue;
     document.getElementById("completionPercent").textContent = percent + "%";
-  }
-  function getWittyLabel(percent) {
-    if (percent === 0) return "Get started";
-    if (percent <= 40) return "Just getting started…😀";
-    if (percent <= 49) return "Warming up! 😌";
-    if (percent <= 50) return "Halfway done 💪";
-    if (percent <= 70) return "Making progress 🙌";
-    if (percent <= 90) return "Almost there 😎";
-    if (percent < 100) return "So close! 👀";
-    return "All done! 🚀";
   }
 
   function renderTasks() {
