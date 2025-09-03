@@ -8,12 +8,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const filterStatus = document.getElementById("filterStatus");
   const progressBar = document.getElementById("progressBar");
   const resetTasksBtn = document.getElementById("resetTasksBtn");
-  const filterCategory = document.getElementById("filterCategory");
-  if (filterCategory) {
-    filterCategory.addEventListener("change", renderTasks);
+  const categoryTabs = document.querySelectorAll("#categoryTabs .nav-link");
+  const filterDate = document.getElementById("filterDate");
+  if (filterDate) {
+    filterDate.addEventListener("change", renderTasks);
   }
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  let activeCategory = "all";
+
+  categoryTabs.forEach((tab) => {
+    tab.addEventListener("click", (e) => {
+      e.preventDefault();
+      categoryTabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      activeCategory = tab.getAttribute("data-category");
+      renderTasks();
+    });
+  });
 
   function getWittyLabel(percent) {
     if (percent === 0) return "Get started";
@@ -48,21 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const overdue = tasks.filter(
       (t) => t.date && t.date < today && !t.complete
     ).length;
-    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
-    document.getElementById("totalTasks").textContent = total;
-    document.getElementById("completedTasks").textContent = completed;
-    document.getElementById("overdueTasks").textContent = overdue;
-    document.getElementById("completionPercent").textContent = percent + "%";
+    if (window.taskChart) {
+      const incomplete = Math.max(0, total - completed - overdue);
+      window.taskChart.data.datasets[0].data = [completed, incomplete, overdue];
+      window.taskChart.update();
+    }
   }
 
   function renderTasks() {
     taskList.innerHTML = "";
-
     const searchTerm = searchBox.value.toLowerCase();
     const filter = filterStatus.value;
-    const categoryFilter =
-      document.getElementById("filterCategory")?.value || "all";
     const dateFilter = document.getElementById("filterDate")?.value || "";
     const today = new Date().toISOString().split("T")[0];
 
@@ -75,18 +84,20 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .filter((task) => {
         if (
-          categoryFilter !== "all" &&
-          (task.category || "").toLowerCase() !== categoryFilter.toLowerCase()
-        )
+          activeCategory !== "all" &&
+          (task.category || "").toLowerCase() !== activeCategory.toLowerCase()
+        ) {
           return false;
-
-        if (dateFilter && task.date !== dateFilter) return false;
-
+        }
+        if (dateFilter) {
+          return task.date && task.date === dateFilter;
+        }
         return true;
       })
       .forEach((task) => {
         const li = document.createElement("li");
-        li.className = `list-group-item d-flex justify-content-between align-items-center`;
+        li.className =
+          "list-group-item d-flex justify-content-between align-items-center";
 
         const isOverdue = task.date && task.date < today && !task.complete;
         const overdueBadge = isOverdue
@@ -94,38 +105,33 @@ document.addEventListener("DOMContentLoaded", () => {
           : "";
 
         li.innerHTML = `
-        <div>
-          <input type="checkbox" ${
-            task.complete ? "checked" : ""
-          } class="me-2 toggle-task"/>
-          <strong>${task.name}</strong>
-          <span class="badge bg-${
-            task.priority === "high"
-              ? "danger"
-              : task.priority === "medium"
-              ? "warning"
-              : "success"
-          } ms-2">${task.priority}</span>
-          <span class="badge bg-purple ms-2">${
-            task.category || "Uncategorized"
-          }</span>
-          <small class="text-muted ms-2">${task.date || ""}</small>
-          ${overdueBadge}
-        </div>
-        <div>
-          <button class="btn btn-sm btn-info edit-task">Edit</button>
-          <button class="btn btn-sm btn-danger delete-task">Delete</button>
-        </div>
-      `;
+          <div>
+            <input type="checkbox" ${
+              task.complete ? "checked" : ""
+            } class="me-2 toggle-task"/>
+            <strong>${task.name}</strong>
+            <span class="badge bg-${
+              task.priority === "high"
+                ? "danger"
+                : task.priority === "medium"
+                ? "warning"
+                : "success"
+            } ms-2">${task.priority}</span>
+            <span class="badge bg-purple ms-2">${
+              task.category || "Uncategorized"
+            }</span>
+            <small class="text-muted ms-2">${task.date || ""}</small>
+            ${overdueBadge}
+          </div>
+          <div>
+            <button class="btn btn-sm btn-info edit-task">Edit</button>
+            <button class="btn btn-sm btn-danger delete-task">Delete</button>
+          </div>
+        `;
 
         li.querySelector(".toggle-task").addEventListener("change", () => {
           task.complete = !task.complete;
           saveTasks();
-          renderTasks();
-          updateTaskStatistics();
-          updateProgress();
-          if (typeof updatePriorityBreakdown === "function")
-            updatePriorityBreakdown();
         });
 
         li.querySelector(".edit-task").addEventListener("click", () => {
@@ -180,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem("tasks");
       renderTasks();
       updateProgress();
-      updatePriorityBreakdown();
       updateTaskStatistics();
     }
   });
@@ -205,8 +210,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderTasks();
     updateTaskStatistics();
     updateProgress();
-    if (typeof updatePriorityBreakdown === "function")
-      updatePriorityBreakdown();
   }
 
   searchBox.addEventListener("input", renderTasks);
@@ -216,5 +219,4 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTasks();
   updateTaskStatistics();
   updateProgress();
-  if (typeof updatePriorityBreakdown === "function") updatePriorityBreakdown();
 });
