@@ -55,7 +55,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const total = tasks.length;
     const completed = tasks.filter((t) => t.complete).length;
     const today = new Date().toISOString().split("T")[0];
-    const overdue = tasks.filter((t) => t.date && t.date < today && !t.complete).length;
+    const overdue = tasks.filter(
+      (t) => t.date && t.date < today && !t.complete
+    ).length;
 
     if (window.taskChart) {
       const incomplete = Math.max(0, total - completed - overdue);
@@ -65,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function attachPriorityToggles() {
-    document.querySelectorAll(".toggle-btn").forEach(btn => {
+    document.querySelectorAll(".toggle-btn").forEach((btn) => {
       const list = btn.nextElementSibling;
 
       list.classList.add("collapsed");
@@ -73,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.replaceWith(btn.cloneNode(true));
     });
 
-    document.querySelectorAll(".toggle-btn").forEach(btn => {
+    document.querySelectorAll(".toggle-btn").forEach((btn) => {
       const list = btn.nextElementSibling;
       btn.addEventListener("click", () => {
         list.classList.toggle("collapsed");
@@ -84,9 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderTasks() {
     taskList.innerHTML = "";
 
-    highPriorityList.innerHTML = '';
-    mediumPriorityList.innerHTML = '';
-    lowPriorityList.innerHTML = '';
+    highPriorityList.innerHTML = "";
+    mediumPriorityList.innerHTML = "";
+    lowPriorityList.innerHTML = "";
 
     const searchTerm = searchBox.value.toLowerCase();
     const filter = filterStatus.value;
@@ -101,24 +103,40 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
       })
       .filter((task) => {
-        if (activeCategory !== "all" && (task.category || "").toLowerCase() !== activeCategory.toLowerCase()) return false;
+        if (
+          activeCategory !== "all" &&
+          (task.category || "").toLowerCase() !== activeCategory.toLowerCase()
+        )
+          return false;
         if (dateFilter) return task.date && task.date === dateFilter;
         return true;
       })
       .forEach((task) => {
-
         const li = document.createElement("li");
-        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.className =
+          "list-group-item d-flex justify-content-between align-items-center";
 
         const isOverdue = task.date && task.date < today && !task.complete;
-        const overdueBadge = isOverdue ? `<span class="badge badge-purple ms-2">Overdue</span>` : "";
+        const overdueBadge = isOverdue
+          ? `<span class="badge badge-purple ms-2">Overdue</span>`
+          : "";
 
         li.innerHTML = `
           <div>
-            <input type="checkbox" ${task.complete ? "checked" : ""} class="me-2 toggle-task"/>
+            <input type="checkbox" ${
+              task.complete ? "checked" : ""
+            } class="me-2 toggle-task"/>
             <strong>${task.name}</strong>
-            <span class="badge bg-${task.priority === "high" ? "danger" : task.priority === "medium" ? "warning text-dark" : "success"} ms-2">${task.priority}</span>
-            <span class="badge bg-purple ms-2">${task.category || "Uncategorized"}</span>
+            <span class="badge bg-${
+              task.priority === "high"
+                ? "danger"
+                : task.priority === "medium"
+                ? "warning text-dark"
+                : "success"
+            } ms-2">${task.priority}</span>
+            <span class="badge bg-purple ms-2">${
+              task.category || "Uncategorized"
+            }</span>
             <small class="text-muted ms-2">${task.date || ""}</small>
             ${overdueBadge}
           </div>
@@ -152,11 +170,16 @@ document.addEventListener("DOMContentLoaded", () => {
         taskList.appendChild(li);
 
         const priorityLi = document.createElement("li");
-        priorityLi.className = "list-group-item d-flex justify-content-between";
-        priorityLi.innerHTML = `<span>${task.name}</span><small class="text-muted">${task.date || ""}</small>`;
+        priorityLi.className =
+          "list-group-item d-flex justify-content-between align-items-center";
+        priorityLi.innerHTML = `
+  <span>${task.name}</span>
+  <small class="text-muted ms-2">${task.date || ""}</small>
+`;
 
         if (task.priority === "high") highPriorityList.appendChild(priorityLi);
-        else if (task.priority === "medium") mediumPriorityList.appendChild(priorityLi);
+        else if (task.priority === "medium")
+          mediumPriorityList.appendChild(priorityLi);
         else lowPriorityList.appendChild(priorityLi);
       });
 
