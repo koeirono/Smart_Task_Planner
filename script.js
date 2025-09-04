@@ -69,42 +69,62 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderTasks() {
-  taskList.innerHTML = "";
+    taskList.innerHTML = "";
 
-  highPriorityList.innerHTML = '<li class="list-group-item bg-red-600 text-white"></li>';
-  mediumPriorityList.innerHTML = '<li class="list-group-item bg-yellow-500 text-white"></li>';
-  lowPriorityList.innerHTML = '<li class="list-group-item bg-green-600 text-white"></li>';
+    highPriorityList.innerHTML =
+      '<li class="list-group-item bg-red-600 text-white"></li>';
+    mediumPriorityList.innerHTML =
+      '<li class="list-group-item bg-yellow-500 text-white"></li>';
+    lowPriorityList.innerHTML =
+      '<li class="list-group-item bg-green-600 text-white"></li>';
 
-  const searchTerm = searchBox.value.toLowerCase();
-  const filter = filterStatus.value;
-  const dateFilter = filterDate?.value || "";
-  const today = new Date().toISOString().split("T")[0];
+    const searchTerm = searchBox.value.toLowerCase();
+    const filter = filterStatus.value;
+    const dateFilter = filterDate?.value || "";
+    const today = new Date().toISOString().split("T")[0];
 
-  tasks
-    .filter(task => task.name.toLowerCase().includes(searchTerm))
-    .filter(task => {
-      if (filter === "complete") return task.complete;
-      if (filter === "incomplete") return !task.complete;
-      return true;
-    })
-    .filter(task => {
-      if (activeCategory !== "all" && (task.category || "").toLowerCase() !== activeCategory.toLowerCase()) return false;
-      if (dateFilter) return task.date && task.date === dateFilter;
-      return true;
-    })
-    .forEach(task => {
-      const li = document.createElement("li");
-      li.className = "list-group-item d-flex justify-content-between align-items-center";
+    tasks
+      .filter((task) => task.name.toLowerCase().includes(searchTerm))
+      .filter((task) => {
+        if (filter === "complete") return task.complete;
+        if (filter === "incomplete") return !task.complete;
+        return true;
+      })
+      .filter((task) => {
+        if (
+          activeCategory !== "all" &&
+          (task.category || "").toLowerCase() !== activeCategory.toLowerCase()
+        )
+          return false;
+        if (dateFilter) return task.date && task.date === dateFilter;
+        return true;
+      })
+      .forEach((task) => {
+        const li = document.createElement("li");
+        li.className =
+          "list-group-item d-flex justify-content-between align-items-center";
 
-      const isOverdue = task.date && task.date < today && !task.complete;
-      const overdueBadge = isOverdue ? `<span class="badge badge-purple ms-2">Overdue</span>` : "";
+        const isOverdue = task.date && task.date < today && !task.complete;
+        const overdueBadge = isOverdue
+          ? `<span class="badge badge-purple ms-2">Overdue</span>`
+          : "";
 
-      li.innerHTML = `
+        li.innerHTML = `
         <div>
-          <input type="checkbox" ${task.complete ? "checked" : ""} class="me-2 toggle-task"/>
+          <input type="checkbox" ${
+            task.complete ? "checked" : ""
+          } class="me-2 toggle-task"/>
           <strong>${task.name}</strong>
-          <span class="badge bg-${task.priority === "high" ? "danger" : task.priority === "medium" ? "warning text-dark" : "success"} ms-2">${task.priority}</span>
-          <span class="badge bg-purple ms-2">${task.category || "Uncategorized"}</span>
+          <span class="badge bg-${
+            task.priority === "high"
+              ? "danger"
+              : task.priority === "medium"
+              ? "warning text-dark"
+              : "success"
+          } ms-2">${task.priority}</span>
+          <span class="badge bg-purple ms-2">${
+            task.category || "Uncategorized"
+          }</span>
           <small class="text-muted ms-2">${task.date || ""}</small>
           ${overdueBadge}
         </div>
@@ -114,51 +134,50 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      li.querySelector(".toggle-task").addEventListener("change", () => {
-        task.complete = !task.complete;
-        saveTasks();
-      });
-
-      li.querySelector(".edit-task").addEventListener("click", () => {
-        document.getElementById("taskId").value = task.id;
-        taskName.value = task.name;
-        taskPriority.value = task.priority;
-        taskDate.value = task.date;
-        document.getElementById("taskCategory").value = task.category || "";
-        new bootstrap.Modal(document.getElementById("taskModal")).show();
-      });
-
-      li.querySelector(".delete-task").addEventListener("click", () => {
-        if (confirm(`Are you sure you want to delete "${task.name}"?`)) {
-          tasks = tasks.filter(t => t.id !== task.id);
+        li.querySelector(".toggle-task").addEventListener("change", () => {
+          task.complete = !task.complete;
           saveTasks();
-        }
+        });
+
+        li.querySelector(".edit-task").addEventListener("click", () => {
+          document.getElementById("taskId").value = task.id;
+          taskName.value = task.name;
+          taskPriority.value = task.priority;
+          taskDate.value = task.date;
+          document.getElementById("taskCategory").value = task.category || "";
+          new bootstrap.Modal(document.getElementById("taskModal")).show();
+        });
+
+        li.querySelector(".delete-task").addEventListener("click", () => {
+          if (confirm(`Are you sure you want to delete "${task.name}"?`)) {
+            tasks = tasks.filter((t) => t.id !== task.id);
+            saveTasks();
+          }
+        });
+
+        taskList.appendChild(li);
+
+        const priorityLi = document.createElement("li");
+        priorityLi.className = "list-group-item d-flex justify-content-between";
+        priorityLi.innerHTML = `<span>${
+          task.name
+        }</span><small class="text-muted">${task.date || ""}</small>`;
+
+        if (task.priority === "high") highPriorityList.appendChild(priorityLi);
+        else if (task.priority === "medium")
+          mediumPriorityList.appendChild(priorityLi);
+        else lowPriorityList.appendChild(priorityLi);
       });
 
-      taskList.appendChild(li);
-
-      const priorityLi = document.createElement("li");
-      priorityLi.className = "list-group-item d-flex justify-content-between";
-      priorityLi.innerHTML = `<span>${task.name}</span><small class="text-muted">${task.date || ""}</small>`;
-
-      if (task.priority === "high") highPriorityList.appendChild(priorityLi);
-      else if (task.priority === "medium") mediumPriorityList.appendChild(priorityLi);
-      else lowPriorityList.appendChild(priorityLi);
+    updateProgress();
+    updateTaskStatistics();
+  }
+  document.querySelectorAll(".toggle-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const list = btn.nextElementSibling;
+      list.classList.toggle("collapsed");
     });
-
-  updateProgress();
-  updateTaskStatistics();
-}
-document.querySelectorAll(".toggle-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const list = btn.nextElementSibling;
-    list.classList.toggle("collapsed");
-    
-    btn.textContent = list.classList.contains("collapsed")
-      ? btn.textContent.replace("▼", "►")
-      : btn.textContent.replace("►", "▼");
   });
-});
 
   taskForm.addEventListener("submit", (e) => {
     e.preventDefault();
