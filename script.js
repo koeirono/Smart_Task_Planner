@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetTasksBtn = document.getElementById("resetTasksBtn");
   const categoryTabs = document.querySelectorAll("#categoryTabs .nav-link");
   const filterDate = document.getElementById("filterDate");
+
   if (filterDate) {
     filterDate.addEventListener("change", renderTasks);
   }
@@ -45,11 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (progressBar) {
       progressBar.style.width = percent + "%";
-      progressBar.textContent = percent + "%";
-
-      const witty = getWittyLabel(percent);
       const labelEl = document.getElementById("progressLabel");
-      if (labelEl) labelEl.textContent = witty;
+      if (labelEl) labelEl.textContent = getWittyLabel(percent);
     }
   }
 
@@ -57,9 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const total = tasks.length;
     const completed = tasks.filter((t) => t.complete).length;
     const today = new Date().toISOString().split("T")[0];
-    const overdue = tasks.filter(
-      (t) => t.date && t.date < today && !t.complete
-    ).length;
+    const overdue = tasks.filter((t) => t.date && t.date < today && !t.complete).length;
 
     if (window.taskChart) {
       const incomplete = Math.max(0, total - completed - overdue);
@@ -68,15 +64,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function attachPriorityToggles() {
+    document.querySelectorAll(".toggle-btn").forEach(btn => {
+      const list = btn.nextElementSibling;
+
+      list.classList.add("collapsed");
+
+      btn.replaceWith(btn.cloneNode(true));
+    });
+
+    document.querySelectorAll(".toggle-btn").forEach(btn => {
+      const list = btn.nextElementSibling;
+      btn.addEventListener("click", () => {
+        list.classList.toggle("collapsed");
+      });
+    });
+  }
+
   function renderTasks() {
     taskList.innerHTML = "";
 
-    highPriorityList.innerHTML =
-      '<li class="list-group-item bg-red-600 text-white"></li>';
-    mediumPriorityList.innerHTML =
-      '<li class="list-group-item bg-yellow-500 text-white"></li>';
-    lowPriorityList.innerHTML =
-      '<li class="list-group-item bg-green-600 text-white"></li>';
+    highPriorityList.innerHTML = '';
+    mediumPriorityList.innerHTML = '';
+    lowPriorityList.innerHTML = '';
 
     const searchTerm = searchBox.value.toLowerCase();
     const filter = filterStatus.value;
@@ -91,48 +101,32 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
       })
       .filter((task) => {
-        if (
-          activeCategory !== "all" &&
-          (task.category || "").toLowerCase() !== activeCategory.toLowerCase()
-        )
-          return false;
+        if (activeCategory !== "all" && (task.category || "").toLowerCase() !== activeCategory.toLowerCase()) return false;
         if (dateFilter) return task.date && task.date === dateFilter;
         return true;
       })
       .forEach((task) => {
+
         const li = document.createElement("li");
-        li.className =
-          "list-group-item d-flex justify-content-between align-items-center";
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
 
         const isOverdue = task.date && task.date < today && !task.complete;
-        const overdueBadge = isOverdue
-          ? `<span class="badge badge-purple ms-2">Overdue</span>`
-          : "";
+        const overdueBadge = isOverdue ? `<span class="badge badge-purple ms-2">Overdue</span>` : "";
 
         li.innerHTML = `
-        <div>
-          <input type="checkbox" ${
-            task.complete ? "checked" : ""
-          } class="me-2 toggle-task"/>
-          <strong>${task.name}</strong>
-          <span class="badge bg-${
-            task.priority === "high"
-              ? "danger"
-              : task.priority === "medium"
-              ? "warning text-dark"
-              : "success"
-          } ms-2">${task.priority}</span>
-          <span class="badge bg-purple ms-2">${
-            task.category || "Uncategorized"
-          }</span>
-          <small class="text-muted ms-2">${task.date || ""}</small>
-          ${overdueBadge}
-        </div>
-        <div>
-          <button class="btn btn-sm btn-info edit-task">Edit</button>
-          <button class="btn btn-sm btn-danger delete-task">Delete</button>
-        </div>
-      `;
+          <div>
+            <input type="checkbox" ${task.complete ? "checked" : ""} class="me-2 toggle-task"/>
+            <strong>${task.name}</strong>
+            <span class="badge bg-${task.priority === "high" ? "danger" : task.priority === "medium" ? "warning text-dark" : "success"} ms-2">${task.priority}</span>
+            <span class="badge bg-purple ms-2">${task.category || "Uncategorized"}</span>
+            <small class="text-muted ms-2">${task.date || ""}</small>
+            ${overdueBadge}
+          </div>
+          <div>
+            <button class="btn btn-sm btn-info edit-task">Edit</button>
+            <button class="btn btn-sm btn-danger delete-task">Delete</button>
+          </div>
+        `;
 
         li.querySelector(".toggle-task").addEventListener("change", () => {
           task.complete = !task.complete;
@@ -159,29 +153,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const priorityLi = document.createElement("li");
         priorityLi.className = "list-group-item d-flex justify-content-between";
-        priorityLi.innerHTML = `<span>${
-          task.name
-        }</span><small class="text-muted">${task.date || ""}</small>`;
+        priorityLi.innerHTML = `<span>${task.name}</span><small class="text-muted">${task.date || ""}</small>`;
 
         if (task.priority === "high") highPriorityList.appendChild(priorityLi);
-        else if (task.priority === "medium")
-          mediumPriorityList.appendChild(priorityLi);
+        else if (task.priority === "medium") mediumPriorityList.appendChild(priorityLi);
         else lowPriorityList.appendChild(priorityLi);
       });
 
+    attachPriorityToggles();
     updateProgress();
     updateTaskStatistics();
   }
-  document.querySelectorAll(".toggle-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const list = btn.nextElementSibling;
-      list.classList.toggle("collapsed");
-    });
-  });
 
   taskForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const id = document.getElementById("taskId").value;
+
     if (id) {
       const task = tasks.find((t) => t.id == id);
       task.name = taskName.value;
@@ -205,8 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   resetTasksBtn.addEventListener("click", () => {
-    const confirmReset = confirm("Are you sure you want to delete all tasks?");
-    if (confirmReset) {
+    if (confirm("Are you sure you want to delete all tasks?")) {
       tasks = [];
       localStorage.removeItem("tasks");
       renderTasks();
