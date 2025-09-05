@@ -46,8 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (progressBar) {
       progressBar.style.width = percent + "%";
-      const labelEl = document.getElementById("progressLabel");
-      if (labelEl) labelEl.textContent = getWittyLabel(percent);
+    }
+
+    const labelEl = document.getElementById("progressLabel");
+    if (labelEl) {
+      labelEl.textContent = `${getWittyLabel(percent)} - ${percent}%`;
     }
   }
 
