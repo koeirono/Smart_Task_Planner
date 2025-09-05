@@ -82,9 +82,24 @@
             />
           </div>
 
-          <div class="bg-gray-100 rounded-xl shadow-inner w-full max-h-64">
-            <canvas id="taskChart" class="w-full h-full"></canvas>
-          </div>
+      <div class="relative bg-gray-100 rounded-xl shadow-inner w-full max-h-64 flex items-center justify-center">
+  <canvas id="taskChart" class="w-full h-full"></canvas>
+
+  <div class="absolute bottom-4 w-3/4 h-6 rounded-xl bg-gray-700 overflow-hidden shadow">
+    <div
+      id="progressBar"
+      class="bg-cyan-500 h-full transition-all duration-500"
+      style="width: 0%"
+    ></div>
+    <div
+      class="absolute inset-0 flex items-center justify-center pointer-events-none"
+    >
+      <span id="progressLabel" class="text-gray-200 font-semibold">
+        Your Progress
+      </span>
+    </div>
+  </div>
+</div>
 
           <div class="priority-section">
             <button
@@ -111,21 +126,6 @@
               Low Priority
             </button>
             <ul class="priority-list collapsed" id="lowPriorityList"></ul>
-          </div>
-
-          <div class="relative h-10 rounded-xl bg-gray-700 overflow-hidden">
-            <div
-              id="progressBar"
-              class="bg-cyan-500 pl-1 h-full transition-all duration-500"
-              style="width: 0%"
-            ></div>
-            <div
-              class="absolute inset-0 flex items-center justify-center pointer-events-none"
-            >
-              <span id="progressLabel" class="text-gray-200 font-semibold"
-                >Your Progress</span
-              >
-            </div>
           </div>
         </div>
 
@@ -242,7 +242,7 @@
           cutout: "65%",
           plugins: {
             legend: {
-              position: "bottom",
+              position: "left",
               labels: {
                 color: "#374151",
                 font: {
