@@ -20,18 +20,34 @@
         color: white;
       }
 
-      .priority-list {
-        max-height: 500px;
-        overflow: hidden;
-        transition: max-height 0.3s ease, padding 0.3s ease;
-        margin: 0;
-        padding-left: 1rem;
-        list-style: none;
+      #taskList .list-group-item,
+      .priority-list li {
+        font-size: 1.2rem;
+        font-weight: 500;
+        line-height: 1.6;
       }
 
-      .priority-list.collapsed {
-        max-height: 0;
-        padding: 0;
+      #priorityTabs .nav-link {
+        color: #000 !important;
+        font-weight: 600;
+      }
+
+      #priorityTabs .nav-link[data-priority="high"].active {
+        background-color: #dc2626 !important;
+        border: 3px solid #7f1d1d !important;
+        color: #fff !important;
+      }
+
+      #priorityTabs .nav-link[data-priority="medium"].active {
+        background-color: #eab308 !important;
+        border: 3px solid #854d0e !important;
+        color: #000 !important;
+      }
+
+      #priorityTabs .nav-link[data-priority="low"].active {
+        background-color: #16a34a !important;
+        border: 3px solid #14532d !important;
+        color: #fff !important;
       }
     </style>
   </head>
@@ -54,9 +70,13 @@
     <div
       class="relative z-10 w-full max-w-7xl p-4 md:p-6 -mt-6 rounded-lg shadow-lg bg-gray-900 bg-opacity-80"
     >
-        <div class="flex justify-center mb-2">
-      <img src="logo.png" alt="Logo" class="w-24 h-auto drop-shadow-[0_0_10px_#22d3ee]" />
-    </div>
+      <div class="flex justify-center mb-2">
+        <img
+          src="logo.png"
+          alt="Logo"
+          class="w-24 h-auto drop-shadow-[0_0_10px_#22d3ee]"
+        />
+      </div>
       <div class="mb-6 text-center">
         <p id="quote" class="italic text-white"></p>
       </div>
@@ -82,55 +102,32 @@
             />
           </div>
 
-      <div class="relative bg-gray-100 rounded-xl shadow-inner w-full max-h-64 flex items-center justify-center">
-  <canvas id="taskChart" class="w-full h-full"></canvas>
+          <div
+            class="relative bg-gray-100 rounded-xl shadow-inner w-full max-h-64 flex items-center justify-center"
+          >
+            <canvas id="taskChart" class="w-full h-full"></canvas>
 
-  <div class="absolute bottom-4 w-3/4 h-6 rounded-xl bg-gray-700 overflow-hidden shadow">
-    <div
-      id="progressBar"
-      class="bg-cyan-500 h-full transition-all duration-500"
-      style="width: 0%"
-    ></div>
-    <div
-      class="absolute inset-0 flex items-center justify-center pointer-events-none"
-    >
-      <span id="progressLabel" class="text-gray-200 font-semibold">
-        Your Progress
-      </span>
-    </div>
-  </div>
-</div>
-
-          <div class="priority-section">
-            <button
-              class="toggle-btn bg-red-600 text-white w-full text-left px-3 py-2 rounded"
+            <div
+              class="absolute bottom-4 w-3/4 h-6 rounded-xl bg-gray-700 overflow-hidden shadow"
             >
-              High Priority
-            </button>
-            <ul class="priority-list collapsed" id="highPriorityList"></ul>
-          </div>
-
-          <div class="priority-section">
-            <button
-              class="toggle-btn bg-yellow-500 text-white w-full text-left px-3 py-2 rounded"
-            >
-              Medium Priority
-            </button>
-            <ul class="priority-list collapsed" id="mediumPriorityList"></ul>
-          </div>
-
-          <div class="priority-section">
-            <button
-              class="toggle-btn bg-green-600 text-white w-full text-left px-3 py-2 rounded"
-            >
-              Low Priority
-            </button>
-            <ul class="priority-list collapsed" id="lowPriorityList"></ul>
+              <div
+                id="progressBar"
+                class="bg-cyan-500 h-full transition-all duration-500"
+                style="width: 0%"
+              ></div>
+              <div
+                class="absolute inset-0 flex items-center justify-center pointer-events-none"
+              >
+                <span id="progressLabel" class="text-gray-200 font-semibold">
+                  Your Progress
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="space-y-4">
-          <ul class="nav nav-tabs mb-4" id="categoryTabs">
+          <ul class="nav nav-tabs mb-2" id="categoryTabs">
             <li class="nav-item">
               <a class="nav-link active" href="#" data-category="all">All</a>
             </li>
@@ -145,6 +142,24 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#" data-category="other">Other</a>
+            </li>
+          </ul>
+
+          <ul class="nav nav-pills mb-4" id="priorityTabs">
+            <li class="nav-item">
+              <a class="nav-link bg-red-600" href="#" data-priority="high"
+                >High</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link bg-yellow-500" href="#" data-priority="medium"
+                >Medium</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link bg-green-600" href="#" data-priority="low"
+                >Low</a
+              >
             </li>
           </ul>
 
@@ -254,6 +269,26 @@
         },
       });
       window.taskChart = taskChart;
+
+      let activePriority = "all";
+
+      document.querySelectorAll("#priorityTabs .nav-link").forEach((tab) => {
+        tab.addEventListener("click", (e) => {
+          e.preventDefault();
+
+          document
+            .querySelectorAll("#priorityTabs .nav-link")
+            .forEach((t) => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          activePriority = tab.getAttribute("data-priority");
+          if (activePriority === null) activePriority = "all";
+
+          if (typeof renderTasks === "function") renderTasks();
+        });
+      });
+
+      window.getActivePriority = () => activePriority;
     </script>
 
     <script src="script.js"></script>

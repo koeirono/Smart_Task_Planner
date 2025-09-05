@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressBar = document.getElementById("progressBar");
   const resetTasksBtn = document.getElementById("resetTasksBtn");
   const categoryTabs = document.querySelectorAll("#categoryTabs .nav-link");
+  const priorityTabs = document.querySelectorAll("#priorityTabs .nav-link");
   const filterDate = document.getElementById("filterDate");
 
   if (filterDate) {
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   let activeCategory = "all";
+  let activePriority = null;
 
   categoryTabs.forEach((tab) => {
     tab.addEventListener("click", (e) => {
@@ -24,19 +26,34 @@ document.addEventListener("DOMContentLoaded", () => {
       categoryTabs.forEach((t) => t.classList.remove("active"));
       tab.classList.add("active");
       activeCategory = tab.getAttribute("data-category");
+      activePriority = null; 
+      priorityTabs.forEach((t) => t.classList.remove("active"));
+      renderTasks();
+    });
+  });
+
+  priorityTabs.forEach((tab) => {
+    tab.addEventListener("click", (e) => {
+      e.preventDefault();
+      priorityTabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      activePriority = tab.getAttribute("data-priority");
+      activeCategory = "all"; 
+      categoryTabs.forEach((t) => t.classList.remove("active"));
+      document.querySelector('[data-category="all"]').classList.add("active"); 
       renderTasks();
     });
   });
 
   function getWittyLabel(percent) {
     if (percent === 0) return "Get started";
-    if (percent <= 40) return "Just getting started…😀";
-    if (percent <= 49) return "Warming up! 😌";
-    if (percent <= 50) return "Halfway done 💪";
-    if (percent <= 70) return "Making progress 🙌";
-    if (percent <= 90) return "Almost there 😎";
-    if (percent < 100) return "So close! 👀";
-    return "All done! 🚀";
+    if (percent <= 40) return "Just getting started…";
+    if (percent <= 49) return "Warming up! ";
+    if (percent <= 50) return "Halfway done ";
+    if (percent <= 70) return "Making progress ";
+    if (percent <= 90) return "Almost there ";
+    if (percent < 100) return "So close! ";
+    return "All done! ";
   }
 
   function updateProgress() {
@@ -69,29 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function attachPriorityToggles() {
-    document.querySelectorAll(".toggle-btn").forEach((btn) => {
-      const list = btn.nextElementSibling;
-
-      list.classList.add("collapsed");
-
-      btn.replaceWith(btn.cloneNode(true));
-    });
-
-    document.querySelectorAll(".toggle-btn").forEach((btn) => {
-      const list = btn.nextElementSibling;
-      btn.addEventListener("click", () => {
-        list.classList.toggle("collapsed");
-      });
-    });
-  }
-
   function renderTasks() {
     taskList.innerHTML = "";
-
-    highPriorityList.innerHTML = "";
-    mediumPriorityList.innerHTML = "";
-    lowPriorityList.innerHTML = "";
 
     const searchTerm = searchBox.value.toLowerCase();
     const filter = filterStatus.value;
@@ -109,6 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (
           activeCategory !== "all" &&
           (task.category || "").toLowerCase() !== activeCategory.toLowerCase()
+        )
+          return false;
+        if (
+          activePriority &&
+          (task.priority || "").toLowerCase() !== activePriority.toLowerCase()
         )
           return false;
         if (dateFilter) return task.date && task.date === dateFilter;
@@ -171,22 +172,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         taskList.appendChild(li);
-
-        const priorityLi = document.createElement("li");
-        priorityLi.className =
-          "list-group-item d-flex justify-content-between align-items-center";
-        priorityLi.innerHTML = `
-  <span>${task.name}</span>
-  <small class="text-muted ms-2">${task.date || ""}</small>
-`;
-
-        if (task.priority === "high") highPriorityList.appendChild(priorityLi);
-        else if (task.priority === "medium")
-          mediumPriorityList.appendChild(priorityLi);
-        else lowPriorityList.appendChild(priorityLi);
       });
 
-    attachPriorityToggles();
     updateProgress();
     updateTaskStatistics();
   }
@@ -212,8 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    
-  saveTasks();
+    saveTasks();
     taskForm.reset();
     bootstrap.Modal.getInstance(document.getElementById("taskModal")).hide();
   });
