@@ -212,7 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    saveTasks();
+    
+  saveTasks();
     taskForm.reset();
     bootstrap.Modal.getInstance(document.getElementById("taskModal")).hide();
   });
