@@ -211,7 +211,15 @@
               },
               padding: 16,
               usePointStyle: true,
+              generateLabels: (chart) => {
+                const original = Chart.overrides.doughnut.plugins.legend.labels.generateLabels(chart);
+                original.forEach(label => {
+                  label.textDecoration = "none";
+                });
+                return original;
+              }
             },
+            onClick: () => null
           },
         },
       },
@@ -247,5 +255,4 @@
 
   <script src="script.js"></script>
 </body>
-
 </html>
